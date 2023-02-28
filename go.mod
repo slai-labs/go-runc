@@ -1,4 +1,4 @@
-module github.com/containerd/go-runc
+module github.com/slai-labs/go-runc
 
 go 1.18
 
