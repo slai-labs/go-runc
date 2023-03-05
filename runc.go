@@ -230,6 +230,7 @@ type ExecOpts struct {
 	Detach        bool
 	Started       chan<- int
 	ExtraArgs     []string
+	OutputWriter  *io.Writer
 }
 
 func (o *ExecOpts) args() (out []string, err error) {
@@ -280,6 +281,12 @@ func (r *Runc) Exec(context context.Context, id string, spec specs.Process, opts
 	if opts != nil && opts.IO != nil {
 		opts.Set(cmd)
 	}
+
+	if opts.OutputWriter != nil {
+		cmd.Stdout = *opts.OutputWriter
+		cmd.Stderr = *opts.OutputWriter
+	}
+
 	if cmd.Stdout == nil && cmd.Stderr == nil {
 		data, err := r.cmdOutput(cmd, true, opts.Started)
 		defer putBuf(data)
