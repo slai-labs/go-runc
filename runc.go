@@ -131,6 +131,7 @@ type CreateOpts struct {
 	// PidFile is a path to where a pid file should be created
 	PidFile       string
 	ConfigPath    string
+	OutputWriter  io.Writer
 	ConsoleSocket ConsoleSocket
 	Detach        bool
 	NoPivot       bool
@@ -338,6 +339,12 @@ func (r *Runc) Run(context context.Context, id, bundle string, opts *CreateOpts)
 	if opts != nil && opts.IO != nil {
 		opts.Set(cmd)
 	}
+
+	if opts.OutputWriter != nil {
+		cmd.Stdout = opts.OutputWriter
+		cmd.Stderr = opts.OutputWriter
+	}
+
 	cmd.ExtraFiles = opts.ExtraFiles
 	ec, err := r.startCommand(cmd)
 	if err != nil {
