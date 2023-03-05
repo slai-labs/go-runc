@@ -230,7 +230,7 @@ type ExecOpts struct {
 	Detach        bool
 	Started       chan<- int
 	ExtraArgs     []string
-	OutputWriter  *io.Writer
+	OutputWriter  io.Writer
 }
 
 func (o *ExecOpts) args() (out []string, err error) {
@@ -283,8 +283,8 @@ func (r *Runc) Exec(context context.Context, id string, spec specs.Process, opts
 	}
 
 	if opts.OutputWriter != nil {
-		cmd.Stdout = *opts.OutputWriter
-		cmd.Stderr = *opts.OutputWriter
+		cmd.Stdout = opts.OutputWriter
+		cmd.Stderr = opts.OutputWriter
 	}
 
 	if cmd.Stdout == nil && cmd.Stderr == nil {
